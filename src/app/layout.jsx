@@ -3,10 +3,13 @@ import "./globals.css";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <header>
+        <nav>Nav</nav>
+      </header>
+      <body className="">
+        <main>{children}</main>
+
+        <footer>footer</footer>
       </body>
     </html>
   );
