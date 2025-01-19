@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { register } from "@/app/actions/auth";
+import { register } from "@/actions/auth";
 
 export default function Register() {
   const [state, action, isPending] = useActionState(register, undefined);

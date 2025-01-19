@@ -1,10 +1,10 @@
 "use server";
 
 import bcrypt from "bcrypt";
-import { RegisterFormSchema } from "../lib/rules";
+import { RegisterFormSchema } from "../app/lib/rules";
 import { redirect } from "next/navigation";
-import { getCollection } from "../lib/db";
-import { createSession } from "../lib/sessions";
+import { getCollection } from "../app/lib/db";
+import { createSession } from "../app/lib/sessions";
 
 export async function register(state, formData) {
   // await new Promise((resolve) => setTimeout(resolve, 3000));
