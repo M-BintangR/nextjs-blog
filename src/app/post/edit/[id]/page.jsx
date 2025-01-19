@@ -3,22 +3,24 @@ import BlogForm from "@/app/components/BlogForm";
 import { getCollection } from "@/lib/db";
 import getAuthUser from "@/lib/getAuthUser";
 import { ObjectId } from "mongodb";
-import { redirect } from "next/dist/server/api-utils";
-import React, { use } from "react";
+import { redirect } from "next/navigation";
 
 export default async function Edit({ params }) {
-  const { id } = params;
+  // Id parameter from page params
+  const { id } = await params;
 
-  // get the auth cookies
-  const user = getAuthUser();
+  // Get the auth user from cookies
+  const user = await getAuthUser();
 
-  const postCollection = await getCollection("posts");
+  const postsCollection = await getCollection("posts");
   let post;
-  if (id.length === 24 && postCollection) {
-    post = await postCollection.findOne({
+  if (id.length === 24 && postsCollection) {
+    // Get the current post from DB
+    post = await postsCollection.findOne({
       _id: ObjectId.createFromHexString(id),
     });
     post = JSON.parse(JSON.stringify(post));
+    // check if auth user owns the post
     if (user.userId !== post.userId) return redirect("/");
   } else {
     post = null;
@@ -27,10 +29,11 @@ export default async function Edit({ params }) {
   return (
     <div className="container w-1/2">
       <h1 className="title">Edit your post</h1>
+
       {post ? (
         <BlogForm handler={updatePost} post={post} />
       ) : (
-        <p>Failed to fetch the data.</p>
+        <p>Failed to fetch the data</p>
       )}
     </div>
   );
