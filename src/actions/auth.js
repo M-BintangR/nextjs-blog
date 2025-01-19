@@ -1,10 +1,11 @@
 "use server";
 
 import bcrypt from "bcrypt";
-import { RegisterFormSchema } from "../app/lib/rules";
 import { redirect } from "next/navigation";
-import { getCollection } from "../app/lib/db";
-import { createSession } from "../app/lib/sessions";
+import { getCollection } from "../lib/db";
+import { createSession } from "../lib/sessions";
+import { LoginFormSchema, RegisterFormSchema } from "@/lib/rules";
+import { errors } from "jose";
 
 export async function register(state, formData) {
   // await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -53,5 +54,41 @@ export async function register(state, formData) {
   await createSession(results.insertedId.toString());
 
   // Redirect
+  redirect("/dashboard");
+}
+
+export async function login(state, formData) {
+  // validated form fields
+  const validatedFields = LoginFormSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  // if any form fields are invalid
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      email: formData.get("email"),
+    };
+  }
+
+  // extract form fields
+  const { email, password } = validatedFields.data;
+
+  // check email if exists in our database
+  const userCollection = await getCollection("users");
+  if (!userCollection) return { errors: { email: "Server error!" } };
+
+  const existingUser = await userCollection.findOne({ email });
+  if (!existingUser) return { errors: { email: "Invalid credentials." } };
+
+  // check password
+  const matchedPassword = await bcrypt.compare(password, existingUser.password);
+  if (!matchedPassword) return { errors: { email: "Invalid credentials." } };
+
+  // create a session
+  await createSession(existingUser._id.toString());
+
+  //redirect
   redirect("/dashboard");
 }

@@ -5,6 +5,7 @@ export default function Navigation() {
     <nav>
       <NavLink label="Home" href="/" />
       <div>
+        <NavLink label="Login" href="/login" />
         <NavLink label="Register" href="/register" />
         <NavLink label="Dashboard" href="/dashboard" />
       </div>

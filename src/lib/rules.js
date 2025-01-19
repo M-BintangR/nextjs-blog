@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const LoginFormSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email." }).trim(),
+  password: z.string().min(1, { message: "Not be empty" }).trim(),
+});
+
 export const RegisterFormSchema = z
   .object({
     email: z.string().email({ message: "Please enter a valid email." }).trim(),
