@@ -1,3 +1,5 @@
+import "server-only";
+
 import { MongoClient, ServerApiVersion } from "mongodb";
 
 if (!process.env.DB_URI) {
